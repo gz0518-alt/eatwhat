@@ -4,42 +4,35 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <title>今天吃什麼</title>
-<meta name="theme-color" content="#F4EBDD">
+<meta name="theme-color" content="#0B3A28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="吃什麼">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
 <style>
   :root {
-    --bg: #F4EBDD;
-    --card: #FFFBF4;
-    --ink: #2B2420;
-    --muted: #8A7B6E;
-    --line: #E3D6C4;
-    --accent: #D9462B;
-    --accent-ink: #FFFFFF;
-    --chip: #EADFCF;
-    --shadow: 0 10px 30px rgba(80, 50, 20, .14);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #1E1A17;
-      --card: #2A2420;
-      --ink: #F3EBE1;
-      --muted: #A89A8C;
-      --line: #3D352F;
-      --accent: #F0623F;
-      --chip: #362E28;
-      --shadow: 0 10px 30px rgba(0, 0, 0, .45);
-    }
+    --felt-1: #17694A;
+    --felt-2: #0B3A28;
+    --felt-3: #062216;
+    --gold: #E8C66A;
+    --gold-hi: #FFF0B8;
+    --gold-deep: #A27A22;
+    --ink: #FFF6E0;
+    --muted: #B9D0C2;
+    --card: #10372A;
+    --chip: rgba(255, 255, 255, .09);
+    --line: rgba(232, 198, 106, .35);
+    --red: #C8102E;
+    --red-deep: #7E0618;
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; height: 100%; }
   body {
-    background: var(--bg);
+    background: radial-gradient(ellipse at 50% 35%, var(--felt-1) 0%, var(--felt-2) 60%, var(--felt-3) 100%) fixed;
+    background-color: var(--felt-2);
     color: var(--ink);
     font-family: -apple-system, "PingFang TC", "Noto Sans TC", "Heiti TC", sans-serif;
     display: flex; flex-direction: column;
@@ -48,126 +41,178 @@
     user-select: none; -webkit-user-select: none;
   }
   button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
-
-  header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 18px 6px;
+  .gold-text {
+    background: linear-gradient(180deg, var(--gold-hi) 0%, var(--gold) 45%, var(--gold-deep) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
   }
-  header h1 { font-size: 24px; margin: 0; letter-spacing: .5px; font-weight: 800; }
+
+  header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px 6px; }
+  header h1 { font-size: 25px; margin: 0; letter-spacing: 1px; font-weight: 900; text-shadow: 0 2px 0 rgba(0,0,0,.25); }
   .icon-btn {
     width: 40px; height: 40px; border-radius: 50%;
-    display: grid; place-items: center; background: var(--chip);
+    display: grid; place-items: center; background: var(--chip); border: 1px solid var(--line); color: var(--gold);
   }
   .icon-btn svg { width: 22px; height: 22px; }
 
-  .tabs {
-    display: flex; gap: 8px; overflow-x: auto; padding: 8px 18px 4px;
-    scrollbar-width: none;
-  }
+  .tabs { display: flex; gap: 8px; overflow-x: auto; padding: 8px 18px 4px; scrollbar-width: none; }
   .tabs::-webkit-scrollbar { display: none; }
   .tab {
     flex: none; padding: 8px 16px; border-radius: 999px; background: var(--chip);
-    font-size: 15px; font-weight: 600; color: var(--muted); white-space: nowrap;
+    border: 1px solid var(--line); font-size: 15px; font-weight: 700; color: var(--muted); white-space: nowrap;
   }
-  .tab.active { background: var(--ink); color: var(--bg); }
+  .tab.active {
+    background: linear-gradient(180deg, var(--gold-hi), var(--gold) 50%, var(--gold-deep));
+    color: #3A2A05; border-color: var(--gold-hi);
+  }
   .tab.add { padding: 8px 13px; }
 
   main {
     flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
     padding: 6px 18px 16px; gap: 14px; min-height: 0;
   }
-  .wheel-wrap { position: relative; width: min(88vw, 52vh, 440px); aspect-ratio: 1; }
-  canvas { width: 100%; height: 100%; display: block; filter: drop-shadow(0 12px 22px rgba(80,50,20,.18)); }
-  .pointer {
-    position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
-    width: 0; height: 0;
-    border-left: 16px solid transparent; border-right: 16px solid transparent;
-    border-top: 30px solid var(--ink);
-    filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
-    z-index: 2;
-  }
-  .hub {
-    position: absolute; inset: 0; margin: auto; width: 18%; height: 18%; border-radius: 50%;
-    background: var(--card); border: 4px solid var(--ink);
-    display: grid; place-items: center; font-size: clamp(14px, 4.5vw, 22px);
+  .wheel-wrap { position: relative; width: min(90vw, 54vh, 460px); aspect-ratio: 1; }
+  canvas#wheel { width: 100%; height: 100%; display: block; filter: drop-shadow(0 16px 24px rgba(0,0,0,.45)); }
+  .flapper {
+    position: absolute; top: -3%; left: 50%; width: 11%; margin-left: -5.5%;
+    transform-origin: 50% 18%; z-index: 2; filter: drop-shadow(0 3px 3px rgba(0,0,0,.5));
+    pointer-events: none;
   }
 
   .excluded { min-height: 30px; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; align-items: center; font-size: 13px; color: var(--muted); }
   .excluded .x-chip { background: var(--chip); padding: 4px 10px; border-radius: 999px; text-decoration: line-through; }
-  .excluded .reset { color: var(--accent); font-weight: 700; padding: 4px 6px; text-decoration: underline; }
+  .excluded .reset { color: var(--gold); font-weight: 700; padding: 4px 6px; text-decoration: underline; }
 
   .spin-btn {
-    width: min(88vw, 360px); padding: 18px; border-radius: 18px;
-    background: var(--accent); color: var(--accent-ink);
-    font-size: 22px; font-weight: 800; letter-spacing: 4px;
-    box-shadow: var(--shadow);
+    width: min(88vw, 360px); padding: 17px; border-radius: 18px;
+    background: linear-gradient(180deg, #E8344F 0%, var(--red) 45%, var(--red-deep) 100%);
+    border: 3px solid var(--gold);
+    box-shadow: 0 0 0 2px var(--gold-deep), 0 10px 24px rgba(0,0,0,.45), inset 0 2px 0 rgba(255,255,255,.35);
+    color: #FFF3D0; font-size: 24px; font-weight: 900; letter-spacing: 6px;
+    text-shadow: 0 2px 0 rgba(0,0,0,.35);
     transition: transform .1s, opacity .2s;
   }
   .spin-btn:active { transform: scale(.97); }
-  .spin-btn:disabled { opacity: .5; }
+  .spin-btn:disabled { opacity: .55; }
 
-  /* 結果卡 */
+  /* 彈出視窗 */
   .overlay {
-    position: fixed; inset: 0; background: rgba(20, 12, 6, .45);
+    position: fixed; inset: 0; background: rgba(0, 0, 0, .55);
     display: flex; align-items: flex-end; justify-content: center;
     opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 10;
   }
+  .overlay.center { align-items: center; padding: 18px; }
   .overlay.show { opacity: 1; pointer-events: auto; }
   .sheet {
     width: 100%; max-width: 520px; background: var(--card);
-    border-radius: 24px 24px 0 0; padding: 22px 20px calc(22px + env(safe-area-inset-bottom));
+    border-radius: 24px 24px 0 0; border-top: 2px solid var(--gold);
+    padding: 22px 20px calc(22px + env(safe-area-inset-bottom));
     transform: translateY(30px); transition: transform .25s;
     max-height: 88vh; overflow-y: auto;
   }
   .overlay.show .sheet { transform: none; }
-  .result-label { text-align: center; color: var(--muted); font-size: 15px; margin: 0; }
-  .result-name { text-align: center; font-size: 40px; font-weight: 900; margin: 6px 0 20px; }
+
+  .card {
+    position: relative; width: 100%; max-width: 400px; border-radius: 26px;
+    background: radial-gradient(ellipse at 50% 0%, #1E5C44 0%, var(--card) 70%);
+    border: 3px solid var(--gold);
+    box-shadow: 0 0 0 3px var(--gold-deep), 0 0 40px rgba(232, 198, 106, .35), 0 20px 50px rgba(0,0,0,.6);
+    padding: 26px 20px 18px; text-align: center;
+    transform: scale(.6); opacity: 0;
+  }
+  .overlay.show .card { animation: popIn .45s cubic-bezier(.2, 1.6, .4, 1) forwards; }
+  @keyframes popIn { to { transform: scale(1); opacity: 1; } }
+
+  .angels { display: flex; justify-content: space-between; align-items: flex-end; height: 0; position: relative; }
+  .angel { position: absolute; width: 88px; top: -78px; }
+  .angel.left { left: -26px; animation: floatA 2.4s ease-in-out infinite; }
+  .angel.right { right: -26px; animation: floatB 2.4s ease-in-out infinite; }
+  .angel.right svg { transform: scaleX(-1); }
+  @keyframes floatA { 0%,100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-10px) rotate(4deg); } }
+  @keyframes floatB { 0%,100% { transform: translateY(-8px) rotate(6deg); } 50% { transform: translateY(2px) rotate(-4deg); } }
+
+  .result-label { color: var(--gold); font-size: 15px; margin: 4px 0 0; letter-spacing: 3px; font-weight: 700; }
+  .result-name {
+    font-size: 46px; font-weight: 900; margin: 6px 0 20px; line-height: 1.15;
+    filter: drop-shadow(0 3px 0 rgba(0,0,0,.35));
+    word-break: break-all;
+  }
+  .overlay.show .result-name { animation: bounceName .7s .25s both; }
+  @keyframes bounceName {
+    0% { transform: scale(.2); opacity: 0; } 60% { transform: scale(1.18); opacity: 1; } 80% { transform: scale(.95); } 100% { transform: scale(1); }
+  }
   .go-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .go-btn {
-    padding: 18px 8px; border-radius: 16px; background: var(--ink); color: var(--bg);
-    font-size: 18px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 16px 8px; border-radius: 16px;
+    background: linear-gradient(180deg, var(--gold-hi), var(--gold) 50%, var(--gold-deep));
+    color: #3A2A05; font-size: 18px; font-weight: 800;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    box-shadow: 0 4px 0 #6E5214;
   }
-  .go-btn small { font-size: 12px; font-weight: 500; opacity: .7; }
+  .go-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #6E5214; }
+  .go-btn small { font-size: 12px; font-weight: 600; opacity: .75; }
   .again-btn {
-    width: 100%; margin-top: 12px; padding: 15px; border-radius: 16px;
-    background: var(--chip); font-size: 16px; font-weight: 700;
+    width: 100%; margin-top: 12px; padding: 14px; border-radius: 16px;
+    background: var(--chip); border: 1px solid var(--line); font-size: 16px; font-weight: 700;
   }
-  .close-link { display: block; margin: 12px auto 0; color: var(--muted); font-size: 14px; padding: 6px 12px; }
-  .note { font-size: 12px; color: var(--muted); text-align: center; margin: 10px 0 0; }
+  .close-link { display: block; margin: 10px auto 0; color: var(--muted); font-size: 14px; padding: 6px 12px; }
+  .note { font-size: 12px; color: var(--muted); margin: 6px 0 0; }
+
+  /* 吃自己彩蛋 */
+  .eat-self .card { padding-top: 34px; }
+  .overlay.show.eat-self .card { animation: popIn .35s cubic-bezier(.2, 1.6, .4, 1) forwards, shake .5s .35s; }
+  @keyframes shake {
+    0%,100% { transform: translateX(0) scale(1); } 15% { transform: translateX(-12px) rotate(-2deg); } 30% { transform: translateX(10px) rotate(2deg); }
+    45% { transform: translateX(-8px) rotate(-1deg); } 60% { transform: translateX(6px); } 75% { transform: translateX(-3px); }
+  }
+  .eat-self-text { font-size: 30px; font-weight: 900; margin: 8px 0 22px; line-height: 1.35; }
+  .ok-btn {
+    width: 100%; padding: 15px; border-radius: 16px; font-size: 18px; font-weight: 800;
+    background: linear-gradient(180deg, #E8344F, var(--red) 50%, var(--red-deep));
+    border: 2px solid var(--gold); color: #FFF3D0;
+  }
+
+  #confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 30; }
 
   /* 設定 */
-  .settings h2 { margin: 0 0 4px; font-size: 22px; }
+  .settings h2 { margin: 0 0 4px; font-size: 22px; color: var(--gold); }
   .settings h3 { margin: 22px 0 8px; font-size: 15px; color: var(--muted); font-weight: 700; }
   .field { display: flex; gap: 8px; }
-  .field input, .field select {
+  .field input {
     flex: 1; min-width: 0; padding: 12px; border-radius: 12px; border: 1px solid var(--line);
-    background: var(--bg); color: var(--ink); font-size: 16px; font-family: inherit;
+    background: rgba(0,0,0,.25); color: var(--ink); font-size: 16px; font-family: inherit;
   }
-  .small-btn { padding: 0 16px; border-radius: 12px; background: var(--ink); color: var(--bg); font-weight: 700; white-space: nowrap; }
+  .field input::placeholder { color: rgba(185, 208, 194, .6); }
+  .small-btn { padding: 0 16px; border-radius: 12px; background: var(--gold); color: #3A2A05; font-weight: 800; white-space: nowrap; }
   .items { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-  .item-chip {
-    display: flex; align-items: center; gap: 6px; padding: 7px 8px 7px 14px; border-radius: 999px;
-    background: var(--chip); font-size: 15px;
-  }
-  .item-chip button { width: 22px; height: 22px; border-radius: 50%; background: var(--line); font-size: 13px; line-height: 1; }
+  .item-chip { display: flex; align-items: center; gap: 6px; padding: 7px 8px 7px 14px; border-radius: 999px; background: var(--chip); font-size: 15px; }
+  .item-chip button { width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,.15); font-size: 13px; line-height: 1; }
   .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
   .row label { font-size: 15px; }
-  .row select { padding: 8px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font-size: 15px; }
-  .danger { color: var(--accent); font-weight: 700; padding: 12px 0; display: block; }
-  .done-btn { width: 100%; margin-top: 22px; padding: 15px; border-radius: 16px; background: var(--accent); color: #fff; font-weight: 800; font-size: 17px; }
+  .row select { padding: 8px; border-radius: 10px; border: 1px solid var(--line); background: rgba(0,0,0,.25); color: var(--ink); font-size: 15px; }
+  .switch { position: relative; width: 52px; height: 30px; flex: none; }
+  .switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+  .switch span { position: absolute; inset: 0; border-radius: 999px; background: rgba(255,255,255,.18); transition: .2s; }
+  .switch span::after { content: ""; position: absolute; left: 3px; top: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; transition: .2s; }
+  .switch input:checked + span { background: var(--gold); }
+  .switch input:checked + span::after { transform: translateX(22px); }
+  .danger { color: #FF8A8A; font-weight: 700; padding: 12px 0; display: block; }
+  .done-btn {
+    width: 100%; margin-top: 22px; padding: 15px; border-radius: 16px; font-weight: 800; font-size: 17px;
+    background: linear-gradient(180deg, var(--gold-hi), var(--gold) 50%, var(--gold-deep)); color: #3A2A05;
+  }
   .toast {
     position: fixed; left: 50%; bottom: calc(30px + env(safe-area-inset-bottom)); transform: translateX(-50%) translateY(20px);
-    background: var(--ink); color: var(--bg); padding: 10px 18px; border-radius: 999px; font-size: 14px;
-    opacity: 0; transition: .25s; pointer-events: none; z-index: 20; white-space: nowrap;
+    background: #000; color: var(--gold); border: 1px solid var(--gold); padding: 10px 18px; border-radius: 999px; font-size: 14px;
+    opacity: 0; transition: .25s; pointer-events: none; z-index: 40; white-space: nowrap;
   }
   .toast.show { opacity: 1; transform: translateX(-50%); }
 </style>
 </head>
 <body>
   <header>
-    <h1>今天吃什麼？</h1>
+    <h1 class="gold-text">今天吃什麼？</h1>
     <button class="icon-btn" id="settingsBtn" aria-label="設定">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.830l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </button>
   </header>
 
@@ -175,19 +220,30 @@
 
   <main>
     <div class="wheel-wrap">
-      <div class="pointer"></div>
+      <svg class="flapper" id="flapper" viewBox="0 0 40 60" aria-hidden="true">
+        <defs>
+          <linearGradient id="fg" x1="0" x2="1">
+            <stop offset="0" stop-color="#A27A22"/><stop offset=".45" stop-color="#FFF0B8"/><stop offset="1" stop-color="#A27A22"/>
+          </linearGradient>
+        </defs>
+        <path d="M20 58 L6 14 A14 14 0 1 1 34 14 Z" fill="url(#fg)" stroke="#5E4410" stroke-width="2"/>
+        <circle cx="20" cy="11" r="5" fill="#C8102E" stroke="#5E4410" stroke-width="1.5"/>
+      </svg>
       <canvas id="wheel"></canvas>
-      <div class="hub">🍽</div>
     </div>
     <div class="excluded" id="excluded"></div>
     <button class="spin-btn" id="spinBtn">轉！</button>
   </main>
 
   <!-- 結果卡 -->
-  <div class="overlay" id="resultOverlay">
-    <div class="sheet">
-      <p class="result-label">今天吃</p>
-      <div class="result-name" id="resultName">—</div>
+  <div class="overlay center" id="resultOverlay">
+    <div class="card">
+      <div class="angels">
+        <div class="angel left" data-mood="happy"></div>
+        <div class="angel right" data-mood="happy"></div>
+      </div>
+      <p class="result-label">～ 今天吃 ～</p>
+      <div class="result-name gold-text" id="resultName">—</div>
       <div class="go-row">
         <button class="go-btn" id="walkBtn">🚶 走路找<small id="walkHint">約 1 公里內</small></button>
         <button class="go-btn" id="driveBtn">🚗 開車找<small id="driveHint">約 5 公里內</small></button>
@@ -198,15 +254,25 @@
     </div>
   </div>
 
+  <!-- 吃自己彩蛋 -->
+  <div class="overlay center eat-self" id="eatSelfOverlay">
+    <div class="card">
+      <div class="angels">
+        <div class="angel left" data-mood="annoyed"></div>
+        <div class="angel right" data-mood="annoyed"></div>
+      </div>
+      <div class="eat-self-text gold-text">這麼難選<br>不如吃自己</div>
+      <button class="ok-btn" id="eatSelfOk">好啦，認真選</button>
+    </div>
+  </div>
+
   <!-- 設定 -->
   <div class="overlay" id="settingsOverlay">
     <div class="sheet settings">
       <h2>設定</h2>
 
       <h3>目前轉盤：名稱</h3>
-      <div class="field">
-        <input id="wheelName" maxlength="10">
-      </div>
+      <div class="field"><input id="wheelName" maxlength="10"></div>
 
       <h3>選項</h3>
       <div class="field">
@@ -235,12 +301,17 @@
       </div>
 
       <h3>其他</h3>
+      <div class="row">
+        <label for="soundOn">🔊 音效</label>
+        <label class="switch"><input type="checkbox" id="soundOn"><span></span></label>
+      </div>
       <button class="danger" id="resetAll">全部恢復預設轉盤</button>
 
       <button class="done-btn" id="settingsDone">完成</button>
     </div>
   </div>
 
+  <canvas id="confetti"></canvas>
   <div class="toast" id="toast"></div>
 
 <script>
@@ -251,26 +322,25 @@
     { id: 'style', name: '形式', items: ['火鍋', '燒肉', '拉麵', '便當', '麵食', '早午餐', '小吃', '咖哩'] },
     { id: 'cn-west', name: '中西式', items: ['中式', '西式', '日韓', '東南亞'] },
   ];
-  // 搜尋時補上的字，讓「日式」→「日式料理」比較準
   const QUERY_SUFFIX = { '台式': '台式料理', '日式': '日式料理', '韓式': '韓式料理', '泰式': '泰式料理', '越式': '越南料理', '義式': '義式料理', '美式': '美式餐廳', '港式': '港式料理', '中式': '中式料理', '西式': '西式餐廳', '日韓': '日韓料理', '東南亞': '東南亞料理', '小吃': '小吃', '麵食': '麵店' };
-
-  const COLORS = ['#E8573B', '#F2A541', '#4C9A6E', '#3C6E91', '#C9483F', '#E9C46A', '#6B8F4E', '#8E5572', '#D9764A', '#2F7F86'];
+  const EAT_SELF_CHANCE = 0.10;
   const STORE_KEY = 'eatwhat-v1';
 
   // ===== 狀態（存手機本機） =====
   const today = () => new Date().toLocaleDateString('sv');
+  function freshState() {
+    return { wheels: JSON.parse(JSON.stringify(DEFAULT_WHEELS)), current: 'country', excluded: {}, excludedDate: today(), walkZoom: 16, driveZoom: 14, sound: true };
+  }
   function load() {
     try {
       const s = JSON.parse(localStorage.getItem(STORE_KEY));
       if (s && Array.isArray(s.wheels) && s.wheels.length) {
         if (s.excludedDate !== today()) { s.excluded = {}; s.excludedDate = today(); }
+        if (typeof s.sound !== 'boolean') s.sound = true;
         return s;
       }
     } catch (e) {}
     return freshState();
-  }
-  function freshState() {
-    return { wheels: JSON.parse(JSON.stringify(DEFAULT_WHEELS)), current: 'country', excluded: {}, excludedDate: today(), walkZoom: 16, driveZoom: 14 };
   }
   function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
 
@@ -280,6 +350,53 @@
   const excludedOf = w => state.excluded[w.id] || [];
   const visibleItems = w => w.items.filter(i => !excludedOf(w).includes(i));
 
+  // ===== 音效（Web Audio，不用外部檔案） =====
+  let actx = null;
+  function audio() {
+    if (!state.sound) return null;
+    try {
+      if (!actx) {
+        // iPhone：跟隨靜音開關
+        if (navigator.audioSession) navigator.audioSession.type = 'ambient';
+        actx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (actx.state === 'suspended') actx.resume();
+      return actx;
+    } catch (e) { return null; }
+  }
+  let lastTick = 0;
+  function tickSound() {
+    const a = audio(); if (!a) return;
+    const now = a.currentTime;
+    if (now - lastTick < 0.035) return;
+    lastTick = now;
+    const o = a.createOscillator(), g = a.createGain();
+    o.type = 'square'; o.frequency.setValueAtTime(1900, now); o.frequency.exponentialRampToValueAtTime(700, now + 0.025);
+    g.gain.setValueAtTime(0.12, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
+    o.connect(g).connect(a.destination); o.start(now); o.stop(now + 0.04);
+  }
+  function dingSound() {
+    const a = audio(); if (!a) return;
+    const now = a.currentTime;
+    [[1318.5, 0], [1760, 0.12], [2637, 0.24]].forEach(([f, d]) => {
+      const o = a.createOscillator(), g = a.createGain();
+      o.type = 'sine'; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, now + d);
+      g.gain.exponentialRampToValueAtTime(0.25, now + d + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + d + 1.3);
+      o.connect(g).connect(a.destination); o.start(now + d); o.stop(now + d + 1.35);
+    });
+  }
+  function boingSound() {
+    const a = audio(); if (!a) return;
+    const now = a.currentTime;
+    const o = a.createOscillator(), g = a.createGain();
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(420, now); o.frequency.exponentialRampToValueAtTime(110, now + 0.5);
+    g.gain.setValueAtTime(0.3, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+    o.connect(g).connect(a.destination); o.start(now); o.stop(now + 0.6);
+  }
+
   // ===== 分類標籤 =====
   function renderTabs() {
     const tabs = $('tabs');
@@ -288,14 +405,14 @@
       const b = document.createElement('button');
       b.className = 'tab' + (w.id === curWheel().id ? ' active' : '');
       b.textContent = w.name;
-      b.onclick = () => { if (spinning) return; state.current = w.id; rotation = 0; save(); renderAll(); };
+      b.onclick = () => { if (spin.active) return; state.current = w.id; rotation = 0; resetTickIndex(); save(); renderAll(); };
       tabs.appendChild(b);
     });
     const add = document.createElement('button');
     add.className = 'tab add';
     add.textContent = '＋ 新轉盤';
     add.onclick = () => {
-      if (spinning) return;
+      if (spin.active) return;
       const id = 'w' + Date.now();
       state.wheels.push({ id, name: '我的轉盤', items: [] });
       state.current = id; save(); renderAll(); openSettings();
@@ -304,90 +421,192 @@
     tabs.appendChild(add);
   }
 
-  // ===== 轉盤繪製 =====
+  // ===== 賭場轉盤繪製 =====
   const canvas = $('wheel');
   const ctx = canvas.getContext('2d');
-  let rotation = 0;   // 弧度
-  let spinning = false;
+  const flapper = $('flapper');
+  let rotation = 0;                 // 弧度
+  const spin = { active: false };   // 轉動中的參數
+  let winFlashUntil = 0;
+  let flap = 0;                     // 指針彈動角度
+  let tickIndex = 0;
+
+  function resetTickIndex() {
+    const n = Math.max(visibleItems(curWheel()).length, 1);
+    tickIndex = Math.floor(rotation / (Math.PI * 2 / n));
+  }
 
   function sizeCanvas() {
     const r = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     canvas.width = Math.round(r.width * dpr);
     canvas.height = Math.round(r.height * dpr);
-    drawWheel();
   }
 
-  function drawWheel() {
+  function segColor(i, n) {
+    if (n % 2 === 1 && i === n - 1) return ['#0F7A45', '#064D2A'];    // 奇數格時最後一格用綠色，像輪盤的 0
+    return i % 2 === 0 ? ['#D41634', '#7E0618'] : ['#2A2A2A', '#0B0B0B'];
+  }
+
+  function drawWheel(now) {
     const items = visibleItems(curWheel());
-    const W = canvas.width, cx = W / 2, cy = W / 2, R = W / 2 - W * 0.02;
+    const W = canvas.width; if (!W) return;
+    const cx = W / 2, cy = W / 2;
+    const Ro = W / 2 * 0.985;         // 外框外緣
+    const rim = W * 0.075;            // 金框厚度
+    const Rs = Ro - rim;              // 格子半徑
     ctx.clearRect(0, 0, W, W);
-    const ink = getComputedStyle(document.documentElement).getPropertyValue('--ink').trim();
 
-    if (items.length === 0) {
-      ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2);
-      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--chip').trim(); ctx.fill();
-      ctx.fillStyle = ink; ctx.font = `600 ${W * 0.045}px -apple-system, "PingFang TC", sans-serif`;
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText('到 ⚙️ 設定加入選項', cx, cy + W * 0.17);
-      return;
-    }
-    const seg = Math.PI * 2 / items.length;
-    items.forEach((label, i) => {
-      const a0 = rotation + i * seg - Math.PI / 2;
-      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, R, a0, a0 + seg); ctx.closePath();
-      // 顏色避免頭尾相同
-      let c = COLORS[i % COLORS.length];
-      if (i === items.length - 1 && i % COLORS.length === 0 && items.length > 1) c = COLORS[3];
-      ctx.fillStyle = c; ctx.fill();
-      ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.lineWidth = W * 0.006; ctx.stroke();
+    // 金框
+    const rg = ctx.createRadialGradient(cx, cy, Rs, cx, cy, Ro);
+    rg.addColorStop(0, '#7A5A12'); rg.addColorStop(0.35, '#FFE9A0'); rg.addColorStop(0.6, '#D9AE48'); rg.addColorStop(1, '#6B4C0E');
+    ctx.beginPath(); ctx.arc(cx, cy, Ro, 0, Math.PI * 2); ctx.arc(cx, cy, Rs, 0, Math.PI * 2, true);
+    ctx.fillStyle = rg; ctx.fill('evenodd');
 
-      // 文字
+    // 燈泡
+    const N = 24, bulbR = rim * 0.2, Rb = Rs + rim / 2;
+    const flashing = now < winFlashUntil;
+    for (let i = 0; i < N; i++) {
+      let on;
+      if (flashing) on = Math.floor(now / 110) % 2 === 0;
+      else if (spin.active) on = ((i - Math.floor(now / 55)) % 4 + 4) % 4 === 0 || ((i - Math.floor(now / 55)) % 4 + 4) % 4 === 1;
+      else on = (i + Math.floor(now / 600)) % 2 === 0;
+      const a = (i / N) * Math.PI * 2;
+      const bx = cx + Math.cos(a) * Rb, by = cy + Math.sin(a) * Rb;
       ctx.save();
-      ctx.translate(cx, cy); ctx.rotate(a0 + seg / 2);
-      const fs = Math.min(W * 0.062, (R * 0.55) / Math.max(label.length, 2) * 1.15, R * seg * 0.42);
-      ctx.font = `800 ${fs}px -apple-system, "PingFang TC", "Noto Sans TC", sans-serif`;
-      ctx.fillStyle = '#fff'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-      ctx.shadowColor = 'rgba(0,0,0,.25)'; ctx.shadowBlur = W * 0.008;
-      ctx.fillText(label, R * 0.88, 0);
+      ctx.beginPath(); ctx.arc(bx, by, bulbR, 0, Math.PI * 2);
+      if (on) {
+        const bg = ctx.createRadialGradient(bx - bulbR * .3, by - bulbR * .3, 0, bx, by, bulbR);
+        bg.addColorStop(0, '#FFFFFF'); bg.addColorStop(0.5, '#FFF3B0'); bg.addColorStop(1, '#FFB52E');
+        ctx.fillStyle = bg; ctx.shadowColor = '#FFD966'; ctx.shadowBlur = bulbR * 2.2;
+      } else {
+        ctx.fillStyle = '#5A4316';
+      }
+      ctx.fill();
       ctx.restore();
-    });
-    // 外圈
-    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2);
-    ctx.strokeStyle = ink; ctx.lineWidth = W * 0.016; ctx.stroke();
+    }
+
+    // 格子
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx, cy, Rs, 0, Math.PI * 2); ctx.clip();
+    if (items.length === 0) {
+      ctx.fillStyle = '#1A1A1A'; ctx.fillRect(0, 0, W, W);
+      ctx.fillStyle = '#E8C66A'; ctx.font = `700 ${W * 0.045}px -apple-system, "PingFang TC", sans-serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('到 ⚙️ 設定加入選項', cx, cy + W * 0.2);
+    } else {
+      const seg = Math.PI * 2 / items.length;
+      items.forEach((label, i) => {
+        const a0 = rotation + i * seg - Math.PI / 2;
+        const [c1, c2] = segColor(i, items.length);
+        const g = ctx.createRadialGradient(cx, cy, Rs * 0.15, cx, cy, Rs);
+        g.addColorStop(0, c2); g.addColorStop(0.55, c1); g.addColorStop(1, c2);
+        ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, Rs, a0, a0 + seg); ctx.closePath();
+        ctx.fillStyle = g; ctx.fill();
+
+        // 文字
+        ctx.save();
+        ctx.translate(cx, cy); ctx.rotate(a0 + seg / 2);
+        const fs = Math.min(W * 0.062, (Rs * 0.55) / Math.max(label.length, 2) * 1.15, Rs * seg * 0.42);
+        ctx.font = `900 ${fs}px -apple-system, "PingFang TC", "Noto Sans TC", sans-serif`;
+        ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+        ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = W * 0.006; ctx.shadowOffsetY = W * 0.003;
+        const tg = ctx.createLinearGradient(0, -fs / 2, 0, fs / 2);
+        tg.addColorStop(0, '#FFF6CF'); tg.addColorStop(1, '#E8C66A');
+        ctx.fillStyle = tg;
+        ctx.fillText(label, Rs * 0.86, 0);
+        ctx.restore();
+      });
+      // 金色分隔線＋釘子
+      for (let i = 0; i < items.length; i++) {
+        const a = rotation + i * seg - Math.PI / 2;
+        ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(a) * Rs, cy + Math.sin(a) * Rs);
+        ctx.strokeStyle = '#E8C66A'; ctx.lineWidth = W * 0.006; ctx.stroke();
+      }
+    }
+    ctx.restore();
+    // 內圈細金線
+    ctx.beginPath(); ctx.arc(cx, cy, Rs, 0, Math.PI * 2);
+    ctx.strokeStyle = '#FFE9A0'; ctx.lineWidth = W * 0.006; ctx.stroke();
+    if (items.length) {
+      const seg = Math.PI * 2 / items.length;
+      for (let i = 0; i < items.length; i++) {
+        const a = rotation + i * seg - Math.PI / 2;
+        const px = cx + Math.cos(a) * (Rs - W * 0.018), py = cy + Math.sin(a) * (Rs - W * 0.018);
+        const pg = ctx.createRadialGradient(px - 2, py - 2, 0, px, py, W * 0.014);
+        pg.addColorStop(0, '#FFFBE0'); pg.addColorStop(1, '#9C7520');
+        ctx.beginPath(); ctx.arc(px, py, W * 0.013, 0, Math.PI * 2); ctx.fillStyle = pg; ctx.fill();
+      }
+    }
+
+    // 中心轉軸
+    const hubR = Rs * 0.2;
+    const hg = ctx.createRadialGradient(cx - hubR * .35, cy - hubR * .35, hubR * .1, cx, cy, hubR);
+    hg.addColorStop(0, '#FFF6CF'); hg.addColorStop(0.5, '#E2B850'); hg.addColorStop(1, '#6B4C0E');
+    ctx.beginPath(); ctx.arc(cx, cy, hubR, 0, Math.PI * 2);
+    ctx.fillStyle = hg; ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = W * 0.02; ctx.fill();
+    ctx.shadowBlur = 0;
+    // 轉軸上的放射紋，跟著轉
+    ctx.save(); ctx.translate(cx, cy); ctx.rotate(rotation);
+    for (let i = 0; i < 8; i++) {
+      ctx.rotate(Math.PI / 4);
+      ctx.beginPath(); ctx.moveTo(hubR * 0.35, 0); ctx.lineTo(hubR * 0.82, 0);
+      ctx.strokeStyle = 'rgba(107, 76, 14, .55)'; ctx.lineWidth = W * 0.006; ctx.lineCap = 'round'; ctx.stroke();
+    }
+    ctx.restore();
+    ctx.beginPath(); ctx.arc(cx, cy, hubR * 0.3, 0, Math.PI * 2);
+    ctx.fillStyle = '#C8102E'; ctx.fill();
+    ctx.strokeStyle = '#6B4C0E'; ctx.lineWidth = W * 0.005; ctx.stroke();
   }
 
-  // ===== 轉動 =====
+  // ===== 主動畫迴圈：燈泡、轉動、指針 =====
   const easeOut = t => 1 - Math.pow(1 - t, 4);
-  function spin() {
-    if (spinning) return;
+  function loop(now) {
+    if (spin.active) {
+      const t = Math.min(1, (now - spin.t0) / spin.dur);
+      rotation = spin.start + (spin.end - spin.start) * easeOut(t);
+      if (t >= 1) finishSpin(now);
+    }
+    // 經過一格 → 指針卡一下＋喀聲
+    const n = visibleItems(curWheel()).length;
+    if (n > 0) {
+      const idx = Math.floor(rotation / (Math.PI * 2 / n));
+      if (idx !== tickIndex) {
+        tickIndex = idx;
+        if (spin.active) { flap = -32; tickSound(); }
+      }
+    }
+    flap += (0 - flap) * 0.22;
+    flapper.style.transform = `rotate(${flap.toFixed(2)}deg)`;
+    if (!document.hidden) drawWheel(now);
+    requestAnimationFrame(loop);
+  }
+
+  function startSpin() {
+    if (spin.active) return;
+    audio(); // iPhone 需要在點擊當下啟動音效
     const items = visibleItems(curWheel());
     if (items.length === 0) { toast('這個轉盤還沒有選項'); openSettings(); return; }
-    if (items.length === 1) { showResult(items[0]); return; }
+    if (items.length === 1) { winFlashUntil = performance.now() + 1200; dingSound(); showResult(items[0]); return; }
 
-    const target = Math.floor(Math.random() * items.length);
-    const seg = Math.PI * 2 / items.length;
-    const off = seg * (0.15 + Math.random() * 0.7);
     const TAU = Math.PI * 2;
+    const target = Math.floor(Math.random() * items.length);
+    const seg = TAU / items.length;
+    const off = seg * (0.15 + Math.random() * 0.7);
     const desired = ((TAU - (target * seg + off)) % TAU + TAU) % TAU;
     const curMod = ((rotation % TAU) + TAU) % TAU;
     const delta = ((desired - curMod) % TAU + TAU) % TAU;
-    const start = rotation, end = rotation + TAU * 6 + delta;
-    const dur = 4200, t0 = performance.now();
-    spinning = true; $('spinBtn').disabled = true;
-
-    function frame(now) {
-      const t = Math.min(1, (now - t0) / dur);
-      rotation = start + (end - start) * easeOut(t);
-      drawWheel();
-      if (t < 1) requestAnimationFrame(frame);
-      else {
-        rotation = end % TAU;
-        spinning = false; $('spinBtn').disabled = false;
-        setTimeout(() => showResult(items[target]), 250);
-      }
-    }
-    requestAnimationFrame(frame);
+    rotation = curMod; resetTickIndex();
+    Object.assign(spin, { active: true, start: rotation, end: rotation + TAU * 6 + delta, t0: performance.now(), dur: 4800, result: items[target] });
+    $('spinBtn').disabled = true;
+  }
+  function finishSpin(now) {
+    spin.active = false;
+    rotation = spin.end % (Math.PI * 2); resetTickIndex();
+    $('spinBtn').disabled = false;
+    winFlashUntil = now + 1300;
+    dingSound();
+    setTimeout(() => showResult(spin.result), 450);
   }
 
   // ===== 排除清單（當天有效） =====
@@ -398,30 +617,122 @@
     const lead = document.createElement('span'); lead.textContent = '今天不吃：'; box.appendChild(lead);
     ex.forEach(i => { const s = document.createElement('span'); s.className = 'x-chip'; s.textContent = i; box.appendChild(s); });
     const r = document.createElement('button'); r.className = 'reset'; r.textContent = '重置';
-    r.onclick = () => { state.excluded[w.id] = []; save(); renderAll(); };
+    r.onclick = () => { state.excluded[w.id] = []; save(); resetTickIndex(); renderAll(); };
     box.appendChild(r);
+  }
+
+  // ===== 小天使（原創 SVG） =====
+  function angelSVG(mood) {
+    const happy = mood === 'happy';
+    const face = happy
+      ? `<path d="M41 44 q3 -4 6 0" stroke="#5A3A2A" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+         <path d="M53 44 q3 -4 6 0" stroke="#5A3A2A" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+         <ellipse cx="51" cy="53.5" rx="3" ry="2.6" fill="#C0504D"/>`
+      : `<ellipse cx="44" cy="44" rx="4" ry="3.2" fill="#fff" stroke="#5A3A2A" stroke-width="1.2"/>
+         <ellipse cx="56" cy="44" rx="4" ry="3.2" fill="#fff" stroke="#5A3A2A" stroke-width="1.2"/>
+         <circle cx="44" cy="41.8" r="1.7" fill="#5A3A2A"/><circle cx="56" cy="41.8" r="1.7" fill="#5A3A2A"/>
+         <path d="M39 38.5 l8 1.5 M61 38.5 l-8 1.5" stroke="#5A3A2A" stroke-width="1.8" stroke-linecap="round"/>
+         <path d="M44 55 l2 -1.6 l2 1.6 l2 -1.6 l2 1.6 l2 -1.6 l2 1.6" stroke="#5A3A2A" stroke-width="1.6" fill="none" stroke-linejoin="round"/>
+         <path d="M70 30 q-4 6 0 8 q4 -2 0 -8z" fill="#8FD3FF" stroke="#4BA3D9" stroke-width=".8"/>`;
+    const trumpet = happy
+      ? `<g transform="rotate(-18 56 56)">
+           <rect x="55" y="54" width="22" height="3.6" rx="1.6" fill="#E8C66A" stroke="#8C6A18" stroke-width=".8"/>
+           <path d="M76 55.8 L90 47 L90 64.6 Z" fill="#F4D77E" stroke="#8C6A18" stroke-width=".8"/>
+           <circle cx="66" cy="53" r="1.6" fill="#8C6A18"/>
+         </g>` : '';
+    return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <g fill="#FFFFFF" stroke="#BFD9F2" stroke-width="1.4">
+        <path d="M36 58 C18 62 8 50 10 38 C16 44 22 42 26 46 C24 52 30 56 36 58Z"/>
+        <path d="M64 58 C82 62 92 50 90 38 C84 44 78 42 74 46 C76 52 70 56 64 58Z"/>
+      </g>
+      <path d="M38 64 Q50 58 62 64 L67 90 Q50 95 33 90 Z" fill="#FFFFFF" stroke="#D9E6F2" stroke-width="1.2"/>
+      <circle cx="50" cy="46" r="19" fill="#FFDCC0" stroke="#E9B894" stroke-width="1"/>
+      <path d="M44 29 q6 -8 12 -1 q-5 -3 -7 2" stroke="#E8B73A" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+      <circle cx="40" cy="51" r="3.6" fill="#FF9AA2" opacity=".7"/>
+      <circle cx="60" cy="51" r="3.6" fill="#FF9AA2" opacity=".7"/>
+      ${face}
+      <ellipse cx="50" cy="18" rx="14" ry="4" fill="none" stroke="#FFE07A" stroke-width="3.2"/>
+      ${trumpet}
+    </svg>`;
+  }
+  document.querySelectorAll('.angel').forEach(el => { el.innerHTML = angelSVG(el.dataset.mood); });
+
+  // ===== 彩帶 =====
+  const cf = $('confetti'), cctx = cf.getContext('2d');
+  let parts = [], cfRunning = false;
+  const CF_COLORS = ['#E8C66A', '#FFF0B8', '#D41634', '#FF5E7E', '#3FB7FF', '#7CE38B', '#B784F7', '#FFFFFF'];
+  function confetti() {
+    const dpr = window.devicePixelRatio || 1;
+    cf.width = innerWidth * dpr; cf.height = innerHeight * dpr;
+    cctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    parts = [];
+    for (let i = 0; i < 170; i++) {
+      parts.push({
+        x: Math.random() * innerWidth, y: -20 - Math.random() * innerHeight * 0.6,
+        vx: (Math.random() - .5) * 2.4, vy: 2 + Math.random() * 3.2,
+        w: 6 + Math.random() * 6, h: 9 + Math.random() * 9,
+        r: Math.random() * Math.PI, vr: (Math.random() - .5) * 0.3,
+        sway: Math.random() * Math.PI * 2, c: CF_COLORS[i % CF_COLORS.length],
+        streamer: Math.random() < 0.18,
+      });
+    }
+    const t0 = performance.now();
+    if (cfRunning) return;
+    cfRunning = true;
+    (function step(now) {
+      cctx.clearRect(0, 0, innerWidth, innerHeight);
+      const fade = Math.max(0, 1 - Math.max(0, now - t0 - 3200) / 900);
+      cctx.globalAlpha = fade;
+      parts.forEach(p => {
+        p.sway += 0.06; p.x += p.vx + Math.sin(p.sway) * 0.8; p.y += p.vy; p.r += p.vr;
+        cctx.save(); cctx.translate(p.x, p.y); cctx.rotate(p.r);
+        cctx.fillStyle = p.c;
+        if (p.streamer) {
+          cctx.beginPath(); cctx.moveTo(0, 0);
+          for (let k = 1; k <= 6; k++) cctx.lineTo(Math.sin(p.sway + k) * 4, k * 5);
+          cctx.strokeStyle = p.c; cctx.lineWidth = 3; cctx.stroke();
+        } else {
+          cctx.scale(1, Math.cos(p.sway * 1.5));
+          cctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        }
+        cctx.restore();
+      });
+      if (fade > 0) requestAnimationFrame(step);
+      else { cctx.clearRect(0, 0, innerWidth, innerHeight); cfRunning = false; }
+    })(t0);
   }
 
   // ===== 結果 =====
   let lastResult = null;
+  function restartAnim(overlay) {
+    // 讓彈出動畫每次都重播
+    overlay.classList.remove('show'); void overlay.offsetWidth; overlay.classList.add('show');
+  }
   function showResult(name) {
     lastResult = name;
     $('resultName').textContent = name;
-    $('resultOverlay').classList.add('show');
+    restartAnim($('resultOverlay'));
+    confetti();
   }
   function hideResult() { $('resultOverlay').classList.remove('show'); }
 
   $('againBtn').onclick = () => {
+    audio();
     const w = curWheel();
     state.excluded[w.id] = [...excludedOf(w), lastResult];
-    save(); hideResult(); renderAll();
+    save(); hideResult(); resetTickIndex(); renderAll();
     if (visibleItems(w).length === 0) {
-      state.excluded[w.id] = []; save(); renderAll();
+      state.excluded[w.id] = []; save(); resetTickIndex(); renderAll();
       toast('全部都排除了，已重置轉盤');
       return;
     }
-    setTimeout(spin, 300);
+    if (Math.random() < EAT_SELF_CHANCE) {
+      setTimeout(() => { restartAnim($('eatSelfOverlay')); boingSound(); }, 250);
+    } else {
+      setTimeout(startSpin, 350);
+    }
   };
+  $('eatSelfOk').onclick = () => { $('eatSelfOverlay').classList.remove('show'); setTimeout(startSpin, 300); };
   $('closeResult').onclick = hideResult;
   $('resultOverlay').onclick = e => { if (e.target.id === 'resultOverlay') hideResult(); };
 
@@ -430,9 +741,7 @@
   function openMaps(mode) {
     const q = queryFor(lastResult);
     const zoom = mode === 'walk' ? state.walkZoom : state.driveZoom;
-    const fallback = () => {
-      window.location.href = 'https://www.google.com/maps/search/' + encodeURIComponent(q + ' 附近');
-    };
+    const fallback = () => { window.location.href = 'https://www.google.com/maps/search/' + encodeURIComponent(q + ' 附近'); };
     if (!navigator.geolocation || !window.isSecureContext) { fallback(); return; }
     toast('定位中…');
     navigator.geolocation.getCurrentPosition(
@@ -461,8 +770,9 @@
     $('wheelName').value = w.name;
     $('walkZoom').value = state.walkZoom;
     $('driveZoom').value = state.driveZoom;
+    $('soundOn').checked = state.sound;
     const list = $('itemList'); list.innerHTML = '';
-    if (!w.items.length) { list.innerHTML = '<span style="color:var(--muted);font-size:14px">還沒有選項</span>'; }
+    if (!w.items.length) list.innerHTML = '<span style="color:var(--muted);font-size:14px">還沒有選項</span>';
     w.items.forEach((it, idx) => {
       const c = document.createElement('span'); c.className = 'item-chip';
       c.textContent = it;
@@ -470,7 +780,7 @@
       x.onclick = () => {
         w.items.splice(idx, 1);
         state.excluded[w.id] = excludedOf(w).filter(e => e !== it);
-        save(); renderSettings(); drawWheel();
+        save(); resetTickIndex(); renderSettings();
       };
       c.appendChild(x); list.appendChild(c);
     });
@@ -480,26 +790,27 @@
     if (!v) return;
     const w = curWheel();
     if (w.items.includes(v)) { toast('已經有「' + v + '」了'); return; }
-    w.items.push(v); $('newItem').value = ''; save(); renderSettings(); drawWheel();
+    w.items.push(v); $('newItem').value = ''; save(); resetTickIndex(); renderSettings();
   }
   $('addItem').onclick = addItem;
   $('newItem').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addItem(); } });
   $('wheelName').addEventListener('input', e => { curWheel().name = e.target.value.trim() || '未命名'; save(); renderTabs(); });
   $('walkZoom').onchange = e => { state.walkZoom = +e.target.value; save(); renderHints(); };
   $('driveZoom').onchange = e => { state.driveZoom = +e.target.value; save(); renderHints(); };
+  $('soundOn').onchange = e => { state.sound = e.target.checked; save(); if (state.sound) { audio(); tickSound(); } };
   $('deleteWheel').onclick = () => {
     if (state.wheels.length <= 1) { toast('至少要留一個轉盤'); return; }
     const w = curWheel();
     if (!confirm('確定刪除「' + w.name + '」？')) return;
     state.wheels = state.wheels.filter(x => x.id !== w.id);
     delete state.excluded[w.id];
-    state.current = state.wheels[0].id; rotation = 0; save(); renderSettings(); renderAll();
+    state.current = state.wheels[0].id; rotation = 0; resetTickIndex(); save(); renderSettings(); renderAll();
   };
   $('resetAll').onclick = () => {
     if (!confirm('會清除你自訂的轉盤，確定恢復預設？')) return;
-    state = freshState(); rotation = 0; save(); renderSettings(); renderAll();
+    state = freshState(); rotation = 0; resetTickIndex(); save(); renderSettings(); renderAll();
   };
-  $('settingsBtn').onclick = () => { if (!spinning) openSettings(); };
+  $('settingsBtn').onclick = () => { if (!spin.active) openSettings(); };
   $('settingsDone').onclick = closeSettings;
   $('settingsOverlay').onclick = e => { if (e.target.id === 'settingsOverlay') closeSettings(); };
 
@@ -509,18 +820,20 @@
     const t = $('toast'); t.textContent = msg; t.classList.add('show');
     clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
   }
-  function renderAll() { renderTabs(); renderExcluded(); renderHints(); drawWheel(); }
+  function renderAll() { renderTabs(); renderExcluded(); renderHints(); }
 
-  $('spinBtn').onclick = spin;
-  canvas.onclick = spin;
+  $('spinBtn').onclick = startSpin;
+  canvas.onclick = startSpin;
   window.addEventListener('resize', sizeCanvas);
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', drawWheel);
-  // 隔天回來自動清掉排除清單
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && state.excludedDate !== today()) { state.excluded = {}; state.excludedDate = today(); save(); renderAll(); }
+    if (!document.hidden && state.excludedDate !== today()) { state.excluded = {}; state.excludedDate = today(); save(); resetTickIndex(); renderAll(); }
   });
 
-  renderAll(); sizeCanvas();
+  renderAll(); sizeCanvas(); resetTickIndex();
+  requestAnimationFrame(loop);
+
+  // 測試用：網址加上 #eatself 可直接看彩蛋畫面
+  if (location.hash === '#eatself') setTimeout(() => restartAnim($('eatSelfOverlay')), 300);
 
   if ('serviceWorker' in navigator && window.isSecureContext) {
     navigator.serviceWorker.register('sw.js').catch(() => {});
