@@ -68,9 +68,74 @@
 
   main {
     flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 6px 18px 16px; gap: 14px; min-height: 0;
+    padding: 6px 18px 14px; gap: 10px; min-height: 0;
   }
-  .wheel-wrap { position: relative; width: min(90vw, 54vh, 460px); aspect-ratio: 1; }
+  .wheel-wrap { position: relative; width: min(88vw, 48vh, 460px); aspect-ratio: 1; }
+
+  /* 籌碼下注區 */
+  .bet-row { display: flex; align-items: center; justify-content: center; gap: 14px; width: min(88vw, 380px); }
+  .chip {
+    --c: #F4F0E6; --s: #1F5FA8;
+    position: relative; width: 58px; height: 58px; border-radius: 50%; flex: none;
+    background:
+      radial-gradient(circle, var(--c) 0 52%, transparent 53%),
+      repeating-conic-gradient(var(--s) 0 15deg, var(--c) 15deg 30deg);
+    box-shadow: 0 0 0 2px rgba(0,0,0,.25), 0 4px 0 #0A2A1C, 0 6px 10px rgba(0,0,0,.4);
+    display: grid; place-items: center;
+    font-weight: 900; font-size: 15px; color: var(--s);
+    transition: transform .1s;
+  }
+  .chip::before { content: ""; position: absolute; inset: 13px; border-radius: 50%; border: 2px dashed var(--s); opacity: .55; }
+  .chip span { position: relative; }
+  .chip:active { transform: translateY(3px); box-shadow: 0 0 0 2px rgba(0,0,0,.25), 0 1px 0 #0A2A1C; }
+  .chip-label { font-size: 11px; color: var(--muted); text-align: center; margin-top: 7px; }
+  .bet-area {
+    flex: 1; height: 76px; border-radius: 40px; border: 2px solid var(--gold);
+    box-shadow: inset 0 0 0 4px rgba(232,198,106,.15);
+    display: flex; align-items: center; justify-content: center; gap: 12px; padding: 0 14px;
+    position: relative;
+  }
+  .stack { position: relative; width: 44px; height: 60px; }
+  .stack i {
+    position: absolute; left: 0; width: 44px; height: 14px; border-radius: 50%;
+    background: repeating-linear-gradient(90deg, #F4F0E6 0 6px, #1F5FA8 6px 11px);
+    box-shadow: 0 2px 0 #0D3A6B, inset 0 0 0 1.5px rgba(0,0,0,.2);
+    animation: drop .22s ease-out;
+  }
+  .stack i:last-child { background: radial-gradient(ellipse, #F4F0E6 0 45%, #1F5FA8 47% 55%, #F4F0E6 57%); }
+  @keyframes drop { from { transform: translateY(-14px); opacity: 0; } }
+  .bet-text { text-align: left; line-height: 1.15; }
+  .bet-text small { display: block; font-size: 11px; color: var(--muted); }
+  .bet-text b { font-size: 22px; }
+  .bet-clear { font-size: 13px; color: var(--muted); text-decoration: underline; padding: 6px; }
+
+  /* 推薦清單 */
+  .list-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .list-head h2 { margin: 0; font-size: 20px; color: var(--gold); }
+  .list-head span { font-size: 13px; color: var(--muted); text-align: right; }
+  .place {
+    display: block; width: 100%; text-align: left; margin-top: 12px; padding: 14px;
+    border-radius: 16px; background: rgba(0,0,0,.22); border: 1px solid var(--line);
+    color: inherit; text-decoration: none;
+  }
+  .place:active { background: rgba(232,198,106,.12); }
+  .place-top { display: flex; gap: 10px; align-items: flex-start; }
+  .place-no {
+    flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+    background: linear-gradient(180deg, var(--gold-hi), var(--gold-deep)); color: #3A2A05; font-weight: 900;
+  }
+  .place-name { font-size: 17px; font-weight: 800; line-height: 1.3; }
+  .place-meta { font-size: 13px; color: var(--muted); margin-top: 3px; display: flex; flex-wrap: wrap; gap: 4px 10px; }
+  .place-meta .star { color: var(--gold); font-weight: 700; }
+  .place-meta .over { color: #FFB0B0; }
+  .place-review { font-size: 13px; color: #DCE8E0; margin: 8px 0 0 40px; line-height: 1.5; font-style: italic; }
+  .list-msg { text-align: center; color: var(--muted); padding: 26px 8px; line-height: 1.6; }
+  .list-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+  .list-btns button { padding: 14px 6px; border-radius: 14px; font-weight: 800; font-size: 15px; background: var(--chip); border: 1px solid var(--line); }
+  .list-btns button.primary { background: linear-gradient(180deg, var(--gold-hi), var(--gold) 50%, var(--gold-deep)); color: #3A2A05; border: 0; }
+  .spinner { width: 34px; height: 34px; margin: 0 auto 12px; border-radius: 50%; border: 4px solid var(--line); border-top-color: var(--gold); animation: rot 0.8s linear infinite; }
+  @keyframes rot { to { transform: rotate(360deg); } }
+  .key-help { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
   canvas#wheel { width: 100%; height: 100%; display: block; filter: drop-shadow(0 16px 24px rgba(0,0,0,.45)); }
   .flapper {
     position: absolute; top: -3%; left: 50%; width: 11%; margin-left: -5.5%;
@@ -232,6 +297,17 @@
       <canvas id="wheel"></canvas>
     </div>
     <div class="excluded" id="excluded"></div>
+    <div class="bet-row">
+      <div>
+        <button class="chip" id="chipBtn" aria-label="加 100 元"><span>100</span></button>
+        <div class="chip-label">點我下注</div>
+      </div>
+      <button class="bet-area" id="betArea" aria-label="點一下減 100 元">
+        <div class="stack" id="stack"></div>
+        <div class="bet-text"><small>每人預算</small><b class="gold-text" id="betText">不限</b></div>
+      </button>
+      <button class="bet-clear" id="betClear">清除</button>
+    </div>
     <button class="spin-btn" id="spinBtn">轉！</button>
   </main>
 
@@ -250,7 +326,23 @@
       </div>
       <button class="again-btn" id="againBtn">不想吃，再抽一次</button>
       <button class="close-link" id="closeResult">先不要，回轉盤</button>
-      <p class="note">會打開 Google Maps，評分與評論在 Maps 裡看</p>
+      <p class="note" id="resultNote"></p>
+    </div>
+  </div>
+
+  <!-- 推薦 3 間 -->
+  <div class="overlay" id="listOverlay">
+    <div class="sheet">
+      <div class="list-head">
+        <h2 id="listTitle">推薦</h2>
+        <span id="listSub"></span>
+      </div>
+      <div id="listBody"></div>
+      <div class="list-btns" id="listBtns">
+        <button id="moreBtn">再找 3 間</button>
+        <button class="primary" id="listAgainBtn">都不要，再抽</button>
+      </div>
+      <button class="close-link" id="closeList">回轉盤</button>
     </div>
   </div>
 
@@ -282,23 +374,31 @@
       <div class="items" id="itemList"></div>
       <button class="danger" id="deleteWheel">刪除這個轉盤</button>
 
-      <h3>搜尋範圍</h3>
+      <h3>搜尋範圍（實際路程）</h3>
       <div class="row">
-        <label for="walkZoom">🚶 走路</label>
-        <select id="walkZoom">
-          <option value="17">約 500 公尺</option>
-          <option value="16">約 1 公里</option>
-          <option value="15">約 2 公里</option>
+        <label for="walkRadius">🚶 走路</label>
+        <select id="walkRadius">
+          <option value="500">500 公尺內（約 6 分）</option>
+          <option value="800">800 公尺內（約 10 分）</option>
+          <option value="1200">1.2 公里內（約 15 分）</option>
+          <option value="2000">2 公里內（約 25 分）</option>
         </select>
       </div>
       <div class="row">
-        <label for="driveZoom">🚗 開車</label>
-        <select id="driveZoom">
-          <option value="15">約 2 公里</option>
-          <option value="14">約 5 公里</option>
-          <option value="13">約 10 公里</option>
+        <label for="driveRadius">🚗 開車</label>
+        <select id="driveRadius">
+          <option value="2000">2 公里內</option>
+          <option value="3000">3 公里內</option>
+          <option value="5000">5 公里內</option>
+          <option value="8000">8 公里內</option>
         </select>
       </div>
+
+      <h3>Google API 金鑰</h3>
+      <div class="field">
+        <input id="apiKey" placeholder="貼上金鑰（AIza 開頭）" autocomplete="off" autocapitalize="off" spellcheck="false">
+      </div>
+      <p class="key-help" id="keyHelp"></p>
 
       <h3>其他</h3>
       <div class="row">
@@ -329,14 +429,17 @@
   // ===== 狀態（存手機本機） =====
   const today = () => new Date().toLocaleDateString('sv');
   function freshState() {
-    return { wheels: JSON.parse(JSON.stringify(DEFAULT_WHEELS)), current: 'country', excluded: {}, excludedDate: today(), walkZoom: 16, driveZoom: 14, sound: true };
+    return { wheels: JSON.parse(JSON.stringify(DEFAULT_WHEELS)), current: 'country', excluded: {}, excludedDate: today(), sound: true, ...EXTRA_DEFAULTS };
   }
+  const EXTRA_DEFAULTS = { walkRadius: 800, driveRadius: 3000, budget: 0, apiKey: '', usage: { date: '', count: 0 } };
   function load() {
     try {
       const s = JSON.parse(localStorage.getItem(STORE_KEY));
       if (s && Array.isArray(s.wheels) && s.wheels.length) {
         if (s.excludedDate !== today()) { s.excluded = {}; s.excludedDate = today(); }
         if (typeof s.sound !== 'boolean') s.sound = true;
+        for (const k in EXTRA_DEFAULTS) if (s[k] === undefined) s[k] = JSON.parse(JSON.stringify(EXTRA_DEFAULTS[k]));
+        delete s.walkZoom; delete s.driveZoom;
         return s;
       }
     } catch (e) {}
@@ -504,17 +607,25 @@
         ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, Rs, a0, a0 + seg); ctx.closePath();
         ctx.fillStyle = g; ctx.fill();
 
-        // 文字
+        // 文字：直式，每個字直立、由外往內排（停在指針下時是正的）
         ctx.save();
         ctx.translate(cx, cy); ctx.rotate(a0 + seg / 2);
-        const fs = Math.min(W * 0.062, (Rs * 0.55) / Math.max(label.length, 2) * 1.15, Rs * seg * 0.42);
+        const chars = [...label];
+        const outer = Rs * 0.9, inner = Rs * 0.27;
+        const fs = Math.min(W * 0.068, (outer - inner) / chars.length / 1.08, Rs * 0.62 * seg * 0.85);
         ctx.font = `900 ${fs}px -apple-system, "PingFang TC", "Noto Sans TC", sans-serif`;
-        ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-        ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = W * 0.006; ctx.shadowOffsetY = W * 0.003;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = W * 0.006;
         const tg = ctx.createLinearGradient(0, -fs / 2, 0, fs / 2);
         tg.addColorStop(0, '#FFF6CF'); tg.addColorStop(1, '#E8C66A');
-        ctx.fillStyle = tg;
-        ctx.fillText(label, Rs * 0.86, 0);
+        chars.forEach((ch, k) => {
+          ctx.save();
+          ctx.translate(outer - fs * 0.55 - k * fs * 1.08, 0);
+          ctx.rotate(Math.PI / 2);
+          ctx.fillStyle = tg;
+          ctx.fillText(ch, 0, 0);
+          ctx.restore();
+        });
         ctx.restore();
       });
       // 金色分隔線＋釘子
@@ -716,7 +827,8 @@
   }
   function hideResult() { $('resultOverlay').classList.remove('show'); }
 
-  $('againBtn').onclick = () => {
+  $('againBtn').onclick = () => reroll();
+  function reroll() {
     audio();
     const w = curWheel();
     state.excluded[w.id] = [...excludedOf(w), lastResult];
@@ -731,36 +843,253 @@
     } else {
       setTimeout(startSpin, 350);
     }
-  };
+  }
   $('eatSelfOk').onclick = () => { $('eatSelfOverlay').classList.remove('show'); setTimeout(startSpin, 300); };
   $('closeResult').onclick = hideResult;
   $('resultOverlay').onclick = e => { if (e.target.id === 'resultOverlay') hideResult(); };
 
-  // ===== 開 Google Maps =====
-  function queryFor(name) { return QUERY_SUFFIX[name] || name; }
-  function openMaps(mode) {
-    const q = queryFor(lastResult);
-    const zoom = mode === 'walk' ? state.walkZoom : state.driveZoom;
-    const fallback = () => { window.location.href = 'https://www.google.com/maps/search/' + encodeURIComponent(q + ' 附近'); };
-    if (!navigator.geolocation || !window.isSecureContext) { fallback(); return; }
-    toast('定位中…');
-    navigator.geolocation.getCurrentPosition(
-      pos => {
-        const { latitude: lat, longitude: lng } = pos.coords;
-        window.location.href = `https://www.google.com/maps/search/${encodeURIComponent(q)}/@${lat.toFixed(6)},${lng.toFixed(6)},${zoom}z`;
-      },
-      () => { toast('無法取得位置，改用 Maps 附近搜尋'); setTimeout(fallback, 700); },
-      { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
-    );
+  // ===== 籌碼預算 =====
+  const MAX_BUDGET = 2000;
+  function chipSound() {
+    const a = audio(); if (!a) return;
+    const now = a.currentTime;
+    [0, 0.045].forEach(d => {
+      const o = a.createOscillator(), g = a.createGain();
+      o.type = 'triangle'; o.frequency.setValueAtTime(2600 - d * 8000, now + d);
+      g.gain.setValueAtTime(0.18, now + d); g.gain.exponentialRampToValueAtTime(0.001, now + d + 0.05);
+      o.connect(g).connect(a.destination); o.start(now + d); o.stop(now + d + 0.06);
+    });
   }
-  $('walkBtn').onclick = () => openMaps('walk');
-  $('driveBtn').onclick = () => openMaps('drive');
+  function renderBet() {
+    const n = state.budget / 100, stack = $('stack');
+    stack.innerHTML = '';
+    for (let i = 0; i < Math.min(n, 8); i++) {
+      const c = document.createElement('i'); c.style.bottom = (i * 5) + 'px'; stack.appendChild(c);
+    }
+    stack.style.display = n ? '' : 'none';
+    $('betText').textContent = n ? '$' + state.budget : '不限';
+  }
+  $('chipBtn').onclick = () => {
+    if (state.budget >= MAX_BUDGET) { toast('最多 $' + MAX_BUDGET); return; }
+    state.budget += 100; chipSound(); save(); renderBet();
+  };
+  $('betArea').onclick = () => { if (!state.budget) return; state.budget -= 100; chipSound(); save(); renderBet(); };
+  $('betClear').onclick = () => { state.budget = 0; save(); renderBet(); };
 
-  const ZOOM_LABEL = { 17: '約 500 公尺內', 16: '約 1 公里內', 15: '約 2 公里內', 14: '約 5 公里內', 13: '約 10 公里內' };
+  // ===== 找餐廳 =====
+  const DAILY_LIMIT = 30;
+  function queryFor(name) { return QUERY_SUFFIX[name] || name; }
+  const fmtDist = m => m < 1000 ? Math.round(m / 10) * 10 + ' 公尺' : (m / 1000).toFixed(1) + ' 公里';
+  function radiusLabel(m) { return fmtDist(m) + '內'; }
   function renderHints() {
-    $('walkHint').textContent = ZOOM_LABEL[state.walkZoom];
-    $('driveHint').textContent = ZOOM_LABEL[state.driveZoom];
+    $('walkHint').textContent = radiusLabel(state.walkRadius);
+    $('driveHint').textContent = radiusLabel(state.driveRadius);
+    $('resultNote').textContent = state.apiKey
+      ? '依實際路程與預算，推薦 3 間營業中的餐廳'
+      : '會打開 Google Maps（到設定填入金鑰，就能直接推薦 3 間）';
   }
+  function usageToday() {
+    if (state.usage.date !== today()) state.usage = { date: today(), count: 0 };
+    return state.usage.count;
+  }
+
+  function getPosition() {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation || !window.isSecureContext) return reject(new Error('nogeo'));
+      navigator.geolocation.getCurrentPosition(p => resolve({ lat: p.coords.latitude, lng: p.coords.longitude }), reject,
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 });
+    });
+  }
+  function haversine(a, b) {
+    const R = 6371000, toR = x => x * Math.PI / 180;
+    const dLat = toR(b.lat - a.lat), dLng = toR(b.lng - a.lng);
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(toR(a.lat)) * Math.cos(toR(b.lat)) * Math.sin(dLng / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+  function openMapsFallback(mode, pos) {
+    const q = queryFor(lastResult);
+    const r = mode === 'walk' ? state.walkRadius : state.driveRadius;
+    const zoom = r <= 600 ? 17 : r <= 1300 ? 16 : r <= 2500 ? 15 : r <= 5000 ? 14 : 13;
+    window.location.href = pos
+      ? `https://www.google.com/maps/search/${encodeURIComponent(q)}/@${pos.lat.toFixed(6)},${pos.lng.toFixed(6)},${zoom}z`
+      : 'https://www.google.com/maps/search/' + encodeURIComponent(q + ' 附近');
+  }
+
+  async function placesSearch(q, pos, radius) {
+    const dLat = radius / 111320, dLng = radius / (111320 * Math.cos(pos.lat * Math.PI / 180));
+    const res = await fetch('https://places.googleapis.com/v1/places:searchText', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': state.apiKey,
+        'X-Goog-FieldMask': 'places.id,places.displayName,places.location,places.rating,places.userRatingCount,places.priceLevel,places.priceRange,places.reviews,places.googleMapsUri',
+      },
+      body: JSON.stringify({
+        textQuery: q, languageCode: 'zh-TW', regionCode: 'TW', openNow: true, pageSize: 20,
+        locationRestriction: { rectangle: {
+          low: { latitude: pos.lat - dLat, longitude: pos.lng - dLng },
+          high: { latitude: pos.lat + dLat, longitude: pos.lng + dLng },
+        } },
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error((data.error && data.error.message) || ('HTTP ' + res.status));
+    return data.places || [];
+  }
+
+  async function routeMatrix(pos, places, mode) {
+    const body = {
+      origins: [{ waypoint: { location: { latLng: { latitude: pos.lat, longitude: pos.lng } } } }],
+      destinations: places.map(p => ({ waypoint: { location: { latLng: { latitude: p.location.latitude, longitude: p.location.longitude } } } })),
+      travelMode: mode === 'walk' ? 'WALK' : 'DRIVE',
+    };
+    if (mode !== 'walk') body.routingPreference = 'TRAFFIC_UNAWARE';
+    const res = await fetch('https://routes.googleapis.com/distanceMatrix/v2:computeRouteMatrix', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Goog-Api-Key': state.apiKey, 'X-Goog-FieldMask': 'originIndex,destinationIndex,distanceMeters,duration,condition' },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (!res.ok || !Array.isArray(data)) throw new Error('route');
+    data.forEach(el => {
+      const p = places[el.destinationIndex];
+      if (!p) return;
+      if (el.condition === 'ROUTE_EXISTS' && el.distanceMeters != null) {
+        p._dist = el.distanceMeters; p._min = Math.max(1, Math.round(parseInt(el.duration) / 60)); p._approx = false;
+      } else { p._dist = Infinity; }
+    });
+  }
+
+  function priceOf(p) {
+    const pr = p.priceRange;
+    if (pr && pr.startPrice) {
+      const s = +pr.startPrice.units || 0, e = pr.endPrice ? +pr.endPrice.units : null;
+      return { start: s, end: e, text: e ? `每人 $${s}–${e}` : `每人 $${s} 以上` };
+    }
+    return null;
+  }
+
+  let listState = null;   // { key, items, page, mode, budget }
+  async function findPlaces(mode) {
+    if (!state.apiKey) { getPosition().then(p => openMapsFallback(mode, p), () => openMapsFallback(mode, null)); toast('定位中…'); return; }
+    const q = queryFor(lastResult), budget = state.budget;
+    const radius = mode === 'walk' ? state.walkRadius : state.driveRadius;
+    const key = [q, mode, radius, budget].join('|');
+    hideResult();
+    openList(mode, q, radius, budget);
+    if (listState && listState.key === key && listState.items) { listState.page = 0; renderList(); return; }
+
+    if (usageToday() >= DAILY_LIMIT) {
+      showListMsg(`今天已經搜尋 ${DAILY_LIMIT} 次，達到每日上限。<br>改用 Google Maps 找。`, true, mode);
+      return;
+    }
+    $('listBody').innerHTML = '<div class="list-msg"><div class="spinner"></div>定位並搜尋中…</div>';
+    $('listBtns').style.display = 'none';
+
+    let pos;
+    try { pos = await getPosition(); }
+    catch (e) { showListMsg('無法取得你的位置。<br>請在 iPhone 設定 → Safari → 位置，允許使用。', true, mode); return; }
+
+    try {
+      state.usage.count++; save();
+      let places = await placesSearch(q, pos, radius);
+      places = places.filter(p => p.location && p.rating);
+      places.forEach(p => {
+        const d = haversine(pos, { lat: p.location.latitude, lng: p.location.longitude });
+        p._straight = d;
+      });
+      // 直線距離已超過的不可能更近，先排除
+      places = places.filter(p => p._straight <= radius);
+      if (places.length) {
+        try { await routeMatrix(pos, places, mode); }
+        catch (e) {
+          // 路線服務失敗時退回估算（直線 ×1.3）
+          places.forEach(p => {
+            p._dist = p._straight * 1.3; p._approx = true;
+            p._min = Math.max(1, Math.round(p._dist / (mode === 'walk' ? 75 : 350)));
+          });
+        }
+      }
+      places = places.filter(p => p._dist <= radius);
+
+      // 預算：有價格區間的，起價 ≤ 預算才算；沒價格的排後面
+      const score = p => (p.rating * p.userRatingCount + 4.2 * 30) / (p.userRatingCount + 30);
+      const fit = [], unknown = [];
+      places.forEach(p => {
+        p._price = priceOf(p);
+        if (!budget) (p._price ? fit : unknown).push(p);
+        else if (p._price) { if (p._price.start <= budget) fit.push(p); }
+        else unknown.push(p);
+      });
+      fit.sort((a, b) => score(b) - score(a));
+      unknown.sort((a, b) => score(b) - score(a));
+      listState = { key, items: [...fit, ...unknown], page: 0, mode, q, radius, budget, pos };
+      renderList();
+    } catch (e) {
+      console.error(e);
+      const m = String(e.message || e);
+      const hint = /API key|PERMISSION|referer|denied/i.test(m) ? '金鑰可能有誤，或還沒開啟 Places API (New)。' : '連線或服務發生問題。';
+      showListMsg(`搜尋失敗：${hint}<br><small>${m.replace(/</g, '&lt;').slice(0, 140)}</small>`, true, mode);
+    }
+  }
+
+  function openList(mode, q, radius, budget) {
+    $('listTitle').textContent = `${lastResult}・${mode === 'walk' ? '🚶 走路' : '🚗 開車'}`;
+    $('listSub').textContent = `${radiusLabel(radius)}・${budget ? '每人 $' + budget + ' 內' : '預算不限'}`;
+    $('listOverlay').classList.add('show');
+  }
+  function showListMsg(html, withMaps, mode) {
+    $('listBody').innerHTML = `<div class="list-msg">${html}</div>`;
+    $('listBtns').style.display = '';
+    $('moreBtn').textContent = withMaps ? '用 Google Maps 找' : '再找 3 間';
+    $('moreBtn').disabled = false;
+    $('moreBtn').onclick = () => getPosition().then(p => openMapsFallback(mode, p), () => openMapsFallback(mode, null));
+  }
+  function renderList() {
+    const L = listState, body = $('listBody');
+    $('listBtns').style.display = '';
+    if (!L.items.length) {
+      showListMsg(`範圍內找不到營業中${L.budget ? '、符合預算' : ''}的「${L.q}」。<br>可以到設定放大範圍、調整預算，或用 Google Maps 找。`, true, L.mode);
+      return;
+    }
+    const slice = L.items.slice(L.page * 3, L.page * 3 + 3);
+    body.innerHTML = '';
+    slice.forEach((p, i) => {
+      const a = document.createElement('a');
+      a.className = 'place';
+      a.href = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(p.displayName.text)}&destination_place_id=${p.id}&travelmode=${L.mode === 'walk' ? 'walking' : 'driving'}`;
+      a.target = '_blank'; a.rel = 'noopener';
+      const review = (p.reviews || []).map(r => (r.text && r.text.text) || (r.originalText && r.originalText.text) || '').find(t => t.trim());
+      const priceHtml = p._price
+        ? `<span class="${L.budget && p._price.start > L.budget ? 'over' : ''}">💰 ${p._price.text}</span>`
+        : '<span>💰 價位未知</span>';
+      a.innerHTML = `
+        <div class="place-top">
+          <div class="place-no">${L.page * 3 + i + 1}</div>
+          <div>
+            <div class="place-name"></div>
+            <div class="place-meta">
+              <span class="star">★ ${p.rating.toFixed(1)}</span><span>(${(p.userRatingCount || 0).toLocaleString()} 則評論)</span>
+              <span>${L.mode === 'walk' ? '🚶' : '🚗'} ${p._approx ? '約 ' : ''}${p._min} 分・${fmtDist(p._dist)}</span>
+              ${priceHtml}
+            </div>
+          </div>
+        </div>
+        ${review ? '<div class="place-review"></div>' : ''}`;
+      a.querySelector('.place-name').textContent = p.displayName.text;
+      if (review) a.querySelector('.place-review').textContent = '「' + (review.length > 70 ? review.slice(0, 70) + '…' : review) + '」';
+      body.appendChild(a);
+    });
+    const hasMore = (L.page + 1) * 3 < L.items.length;
+    $('moreBtn').textContent = hasMore ? '再找 3 間' : '沒有更多了';
+    $('moreBtn').disabled = !hasMore;
+    $('moreBtn').onclick = () => { L.page++; renderList(); $('listOverlay').querySelector('.sheet').scrollTop = 0; };
+  }
+  $('walkBtn').onclick = () => findPlaces('walk');
+  $('driveBtn').onclick = () => findPlaces('drive');
+  $('closeList').onclick = () => $('listOverlay').classList.remove('show');
+  $('listOverlay').onclick = e => { if (e.target.id === 'listOverlay') $('listOverlay').classList.remove('show'); };
+  $('listAgainBtn').onclick = () => { $('listOverlay').classList.remove('show'); reroll(); };
 
   // ===== 設定 =====
   function openSettings() { renderSettings(); $('settingsOverlay').classList.add('show'); }
@@ -768,8 +1097,12 @@
   function renderSettings() {
     const w = curWheel();
     $('wheelName').value = w.name;
-    $('walkZoom').value = state.walkZoom;
-    $('driveZoom').value = state.driveZoom;
+    $('walkRadius').value = state.walkRadius;
+    $('driveRadius').value = state.driveRadius;
+    $('apiKey').value = state.apiKey;
+    $('keyHelp').textContent = state.apiKey
+      ? `今天已搜尋 ${usageToday()} / ${DAILY_LIMIT} 次。金鑰只存在這支手機，不會上傳。`
+      : '沒有金鑰時，按「走路找／開車找」會改開 Google Maps。金鑰只存在這支手機，不會上傳。';
     $('soundOn').checked = state.sound;
     const list = $('itemList'); list.innerHTML = '';
     if (!w.items.length) list.innerHTML = '<span style="color:var(--muted);font-size:14px">還沒有選項</span>';
@@ -795,8 +1128,9 @@
   $('addItem').onclick = addItem;
   $('newItem').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addItem(); } });
   $('wheelName').addEventListener('input', e => { curWheel().name = e.target.value.trim() || '未命名'; save(); renderTabs(); });
-  $('walkZoom').onchange = e => { state.walkZoom = +e.target.value; save(); renderHints(); };
-  $('driveZoom').onchange = e => { state.driveZoom = +e.target.value; save(); renderHints(); };
+  $('walkRadius').onchange = e => { state.walkRadius = +e.target.value; save(); renderHints(); };
+  $('driveRadius').onchange = e => { state.driveRadius = +e.target.value; save(); renderHints(); };
+  $('apiKey').addEventListener('change', e => { state.apiKey = e.target.value.trim(); listState = null; save(); renderSettings(); renderHints(); });
   $('soundOn').onchange = e => { state.sound = e.target.checked; save(); if (state.sound) { audio(); tickSound(); } };
   $('deleteWheel').onclick = () => {
     if (state.wheels.length <= 1) { toast('至少要留一個轉盤'); return; }
@@ -820,7 +1154,7 @@
     const t = $('toast'); t.textContent = msg; t.classList.add('show');
     clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
   }
-  function renderAll() { renderTabs(); renderExcluded(); renderHints(); }
+  function renderAll() { renderTabs(); renderExcluded(); renderHints(); renderBet(); }
 
   $('spinBtn').onclick = startSpin;
   canvas.onclick = startSpin;

@@ -32,3 +32,13 @@ iPhone 要抓目前位置，網頁必須是 HTTPS，所以要放到網路上：
 
 ## 之後可升級
 接上 Google Places API 後，可以在 App 裡直接顯示附近 3 間餐廳的評分與評論。
+
+## Google API 金鑰（推薦 3 間、精準距離、預算篩選）
+1. 到 https://console.cloud.google.com 建立專案（名稱例如 eatwhat）
+2. 左上選單 → 帳單 → 連結帳單帳戶（需要信用卡）
+3. 「API 和服務」→「程式庫」，啟用：**Places API (New)**、**Routes API**
+4. 「API 和服務」→「憑證」→ 建立憑證 → API 金鑰，然後編輯這把金鑰：
+   - 應用程式限制：網站 → 加入 `https://gz0518-alt.github.io/*` 和 `http://localhost:8765/*`
+   - API 限制：只勾 Places API (New)、Routes API
+5. 把金鑰貼到 App 的 ⚙️ 設定 →「Google API 金鑰」
+金鑰只存在手機上，不會上傳到 GitHub。App 每天最多搜尋 30 次。
