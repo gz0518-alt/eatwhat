@@ -1,0 +1,13 @@
+{
+  "name": "今天吃什麼",
+  "short_name": "吃什麼",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#F4EBDD",
+  "theme_color": "#F4EBDD",
+  "lang": "zh-Hant",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
